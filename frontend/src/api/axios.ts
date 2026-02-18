@@ -1,8 +1,7 @@
 import axios from "axios";
 
-const isLocalhost = typeof window !== "undefined" && window.location.hostname === "localhost";
-const baseURL = isLocalhost ? "http://localhost:3000" : "https://listarweb-api.onrender.com";
-
-const instance = axios.create({ baseURL });
+const instance = axios.create({
+  baseURL: "https://listarweb-api.onrender.com",
+});
 
 export default instance;
