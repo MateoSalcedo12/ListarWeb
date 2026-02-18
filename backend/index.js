@@ -8,14 +8,29 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection(
-  process.env.DATABASE_URL || {
-    host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "123456",
-    database: process.env.DB_NAME || "escuela",
+const dbConfig = process.env.DATABASE_URL
+  ? { uri: process.env.DATABASE_URL }
+  : {
+      host: process.env.DB_HOST || "localhost",
+      port: Number(process.env.DB_PORT) || 3306,
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASSWORD || "123456",
+      database: process.env.DB_NAME || "escuela",
+    };
+
+const dbOptions = process.env.DATABASE_URL
+  ? process.env.DATABASE_URL
+  : { ...dbConfig, ssl: process.env.DB_HOST ? { rejectUnauthorized: false } : undefined, connectTimeout: 30000 };
+
+let db = mysql.createConnection(dbOptions);
+
+db.on("error", (err) => {
+  console.error("MySQL error:", err.code);
+  if (err.code === "PROTOCOL_CONNECTION_LOST" || err.code === "ETIMEDOUT") {
+    console.log("Reconectando a MySQL...");
+    db = mysql.createConnection(dbOptions);
   }
-);
+});
 
 const JWT_SECRET = process.env.JWT_SECRET || "1234";
 
