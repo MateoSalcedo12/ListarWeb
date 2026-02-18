@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+html, body, #root {
+  background-color: #0f172a;
+  min-height: 100vh;
+}
+
+@theme {
+  --color-primary: #10b981;
+  --color-primary-hover: #059669;
+  --color-navy-deep: #0f172a;
+  --color-navy-card: #1e293b;
+  --color-navy-input: #0f172a;
+}
